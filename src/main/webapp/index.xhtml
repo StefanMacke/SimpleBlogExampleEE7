@@ -4,7 +4,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:c="http://java.sun.com/jsp/jstl/core">
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
 
 <h:head>
 	<meta content="text/html; charset=UTF-8" />
@@ -14,9 +15,12 @@
 </h:head>
 
 <h:body>
-
-<h1>Blog</h1>
-
+	<h1>Blog</h1>
+	<ui:repeat value="#{postController.posts}" var="post">
+		<h2><h:outputText value="#{post.title}" /></h2>
+		<p><h:outputText value="#{post.content}" /></p>
+		<hr />
+	</ui:repeat>
 </h:body>
 
 </html>
