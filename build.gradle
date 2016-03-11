@@ -1,0 +1,50 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'eclipse-wtp'
+apply plugin: 'war'
+
+group = 'it.macke.blog'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+compileJava.options.encoding = 'UTF-8'
+
+eclipseJdt <<
+{
+	File f = file('.settings/org.eclipse.core.resources.prefs')
+	f.write('eclipse.preferences.version=1\n')
+	f.append('encoding/<project>=UTF-8')
+}
+
+cleanEclipse <<
+{
+	File f = file('.settings/org.eclipse.core.resources.prefs')
+	f.delete()
+}
+
+eclipse
+{
+	wtp
+	{
+		facet
+		{
+			facet name: 'jpt.jpa', version: '2.1'
+			facet name: 'jst.web', version: '3.1'
+			facet name: 'jst.jsf', version: '2.2'
+		}
+	}
+}
+
+repositories
+{
+	maven { url = "http://artifacts.ao-devnet/java-repos" }
+	//mavenCentral()
+}
+
+dependencies
+{
+	compile 'org.slf4j:slf4j-api:1.7.14'
+	compile 'javax:javaee-api:7.0'
+	testCompile 'junit:junit:4.12'
+}
