@@ -16,4 +16,9 @@ public class PostService
 	{
 		return em.createQuery("SELECT p FROM Post p", Post.class).getResultList();
 	}
+
+	public Post find(final Long id)
+	{
+		return em.find(Post.class, id);
+	}
 }

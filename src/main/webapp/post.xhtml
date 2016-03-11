@@ -9,26 +9,17 @@
 
 <h:head>
 	<meta content="text/html; charset=UTF-8" />
-	<title>Blog</title>
+	<title><h:outputText value="#{postController.currentPost.title}" /> - Blog</title>
 	<h:outputStylesheet library="css" name="blog.css" />
 	<h:outputStylesheet library="css" name="bootstrap.min.css" />
 </h:head>
 
 <h:body>
-	<h1>Blog</h1>
-	<ui:repeat value="#{postController.posts}" var="post">
-		<h2>
-			<h:outputText value="#{post.title}" />
-		</h2>
-		<p>
-			<h:outputText value="#{post.content}" />
-		</p>
-		<h:outputLink value="post.xhtml">
-			<f:param name="id" value="#{post.id}" />
-			<h:outputText value="Read more" />
-		</h:outputLink>
-		<hr />
-	</ui:repeat>
+	<h:messages />
+	<h1><h:outputText value="#{postController.currentPost.title}" /></h1>
+	<p><h:outputText value="#{postController.currentPost.content}" /></p>
+	<hr />
+	<a href="index.xhtml" title="Back to list">Back to list</a>
 </h:body>
 
 </html>
