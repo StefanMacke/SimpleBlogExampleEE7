@@ -16,6 +16,7 @@
 
 <h:body>
 	<h1>Blog</h1>
+	<h:messages />
 	<ui:repeat value="#{postController.posts}" var="post">
 		<h2>
 			<h:outputText value="#{post.title}" />

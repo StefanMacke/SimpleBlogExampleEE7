@@ -1,8 +1,9 @@
 package it.macke.blog.domain;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -19,8 +20,8 @@ public class Post
 	private String title;
 	private String content;
 
-	@OneToMany(mappedBy = "post", fetch = FetchType.EAGER)
-	private final Set<Comment> comments = new HashSet<>();
+	@OneToMany(mappedBy = "post", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	private final List<Comment> comments = new ArrayList<>();
 
 	protected Post()
 	{}
@@ -44,5 +45,22 @@ public class Post
 	public String getContent()
 	{
 		return content;
+	}
+
+	public void addComment(final Comment comment)
+	{
+		comments.add(comment);
+		comment.setPost(this);
+	}
+
+	public Iterable<Comment> getComments()
+	{
+		return comments;
+	}
+
+	@Override
+	public String toString()
+	{
+		return "Post " + getId() + ", title " + getTitle();
 	}
 }

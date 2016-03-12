@@ -1,6 +1,7 @@
 package it.macke.blog.domain;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -15,16 +16,15 @@ public class Comment
 
 	private String content;
 
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "post_id")
 	private Post post;
 
 	protected Comment()
 	{}
 
-	public Comment(final long id, final String content)
+	public Comment(final String content)
 	{
-		this.id = id;
 		this.content = content;
 	}
 
@@ -36,5 +36,15 @@ public class Comment
 	public String getContent()
 	{
 		return content;
+	}
+
+	public Post getPost()
+	{
+		return post;
+	}
+
+	public void setPost(final Post post)
+	{
+		this.post = post;
 	}
 }

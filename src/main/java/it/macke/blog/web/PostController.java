@@ -1,20 +1,18 @@
 package it.macke.blog.web;
 
-import java.util.Map;
+import java.util.Optional;
 
 import javax.enterprise.context.RequestScoped;
-import javax.faces.application.FacesMessage;
-import javax.faces.context.ExternalContext;
-import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.persistence.EntityNotFoundException;
 
 import it.macke.blog.domain.Post;
 import it.macke.blog.persistence.PostService;
 
 @Named
 @RequestScoped
-public class PostController
+public class PostController extends Controller
 {
 	@Inject
 	private PostService service;
@@ -26,16 +24,25 @@ public class PostController
 
 	public Post getCurrentPost()
 	{
-		final FacesContext context = FacesContext.getCurrentInstance();
-		final ExternalContext extContext = context.getExternalContext();
-		final Map<String, String> params = extContext.getRequestParameterMap();
-		final Long id = Long.parseLong(params.get("id"));
-		final Post p = service.find(id);
-		if (p == null)
+		try
 		{
-			final FacesMessage message = new FacesMessage("Post not found");
-			context.addMessage(null, message);
+			final Optional<String> idParam = getParameter("id");
+			if (!idParam.isPresent())
+			{
+				throw new IllegalArgumentException();
+			}
+			final Long id = Long.parseLong(idParam.get());
+			final Post p = service.find(id);
+			if (p == null)
+			{
+				throw new EntityNotFoundException();
+			}
+			return p;
 		}
-		return p;
+		catch (final Exception e)
+		{
+			addMessage("Post not found");
+			return new Post("Not found", "No content");
+		}
 	}
 }
