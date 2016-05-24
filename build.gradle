@@ -38,8 +38,7 @@ eclipse
 
 repositories
 {
-	maven { url = "http://artifacts.ao-devnet/java-repos" }
-	//mavenCentral()
+	mavenCentral()
 }
 
 dependencies
