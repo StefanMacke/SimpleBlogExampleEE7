@@ -1,11 +1,13 @@
 package it.macke.blog.web;
 
+import java.util.Map;
 import java.util.Optional;
 
 import javax.enterprise.context.RequestScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.persistence.EntityNotFoundException;
 
 import it.macke.blog.domain.Post;
 import it.macke.blog.persistence.PostService;
@@ -14,35 +16,82 @@ import it.macke.blog.persistence.PostService;
 @RequestScoped
 public class PostController extends Controller
 {
+	public static final String POSTS_PAGE = "index.xhtml";
+	public static final String POST_PAGE = "post.xhtml";
+
 	@Inject
 	private PostService service;
+
+	private Optional<Post> currentPost;
+
+	public String getPostId()
+	{
+		final Map<String, String> requestParams =
+				FacesContext.getCurrentInstance().getExternalContext()
+						.getRequestParameterMap();
+		return requestParams.get("id");
+	}
+
+	public String getPostsPage()
+	{
+		return POSTS_PAGE;
+	}
+
+	public String getPostPage()
+	{
+		return POST_PAGE;
+	}
 
 	public Iterable<Post> getPosts()
 	{
 		return service.findAll();
 	}
 
-	public Post getCurrentPost()
+	public Optional<Long> parsePostId()
 	{
 		try
 		{
-			final Optional<String> idParam = getParameter("id");
-			if (!idParam.isPresent())
-			{
-				throw new IllegalArgumentException();
-			}
-			final Long id = Long.parseLong(idParam.get());
-			final Post p = service.find(id);
-			if (p == null)
-			{
-				throw new EntityNotFoundException();
-			}
-			return p;
+			return Optional.of(Long.parseLong(getPostId()));
 		}
-		catch (final Exception e)
+		catch (final NumberFormatException nfe)
 		{
-			addMessage("Post not found");
-			return new Post("Not found", "No content");
+			addMessage(FacesMessage.SEVERITY_ERROR, "Invalid post ID.");
+			return Optional.empty();
 		}
+	}
+
+	public String checkWhetherPostExists()
+	{
+		findCurrentPost();
+		if (!currentPost.isPresent())
+		{
+			addMessage(FacesMessage.SEVERITY_ERROR, "Post not found.");
+			return getPostsPage();
+		}
+		return null;
+	}
+
+	private void findCurrentPost()
+	{
+		if (currentPost != null)
+		{
+			return;
+		}
+		currentPost = Optional.empty();
+		final Optional<Long> postIdOrNothing = parsePostId();
+		if (postIdOrNothing.isPresent())
+		{
+			currentPost = service.find(postIdOrNothing.get());
+		}
+	}
+
+	public Post getCurrentPost()
+	{
+		findCurrentPost();
+		if (currentPost == null || !currentPost.isPresent())
+		{
+			return new Post("Post not found", "No content");
+		}
+		return currentPost.get();
 	}
 }

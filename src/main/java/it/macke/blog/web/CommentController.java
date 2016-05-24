@@ -1,8 +1,11 @@
 package it.macke.blog.web;
 
 import javax.enterprise.context.RequestScoped;
+import javax.faces.application.FacesMessage;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import it.macke.blog.domain.Comment;
 import it.macke.blog.domain.Post;
@@ -15,6 +18,8 @@ public class CommentController extends Controller
 	@Inject
 	private CommentService service;
 
+	@NotNull(message = "Please enter a comment")
+	@Size(min = 5, message = "Please enter a valid comment")
 	private String content;
 
 	public String getContent()
@@ -30,7 +35,7 @@ public class CommentController extends Controller
 	public String save(final Post p)
 	{
 		service.persist(p.getId(), new Comment(getContent()));
-		addMessage("Your comment has beed saved");
-		return redirect("post.xhtml?id=" + p.getId());
+		addMessage(FacesMessage.SEVERITY_INFO, "Your comment has beed saved");
+		return redirect(PostController.POST_PAGE + "?id=" + p.getId());
 	}
 }

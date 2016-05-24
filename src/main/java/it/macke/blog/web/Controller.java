@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import javax.faces.application.FacesMessage;
+import javax.faces.application.FacesMessage.Severity;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
@@ -17,17 +18,17 @@ public abstract class Controller
 		return Optional.of(params.get("id"));
 	}
 
-	protected void addMessage(final String message)
+	protected void addMessage(final Severity severity, final String message)
 	{
 		final FacesContext context = FacesContext.getCurrentInstance();
 		final ExternalContext externalContext = context.getExternalContext();
-		context.addMessage(null, new FacesMessage(message));
+		context.addMessage(null, new FacesMessage(severity, message, null));
 		externalContext.getFlash().setKeepMessages(true);
 	}
 
 	protected String redirect(final String page)
 	{
 		final String separator = page.contains("?") ? "&" : "?";
-		return page + separator + "faces-redirect=true";
+		return page + separator + "faces-redirect=true&includeViewParams=true";
 	}
 }

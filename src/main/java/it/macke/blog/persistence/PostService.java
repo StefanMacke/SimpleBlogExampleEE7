@@ -1,5 +1,7 @@
 package it.macke.blog.persistence;
 
+import java.util.Optional;
+
 import javax.enterprise.context.RequestScoped;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -17,8 +19,8 @@ public class PostService
 		return em.createQuery("SELECT p FROM Post p", Post.class).getResultList();
 	}
 
-	public Post find(final Long id)
+	public Optional<Post> find(final Long id)
 	{
-		return em.find(Post.class, id);
+		return Optional.ofNullable(em.find(Post.class, id));
 	}
 }

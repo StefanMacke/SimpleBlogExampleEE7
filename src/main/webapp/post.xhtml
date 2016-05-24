@@ -6,42 +6,60 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:p="http://xmlns.jcp.org/jsf/passthrough">
+	xmlns:p="http://java.sun.com/jsf/passthrough">
 
-<h:head>
-	<meta content="text/html; charset=UTF-8" />
-	<title><h:outputText
-			value="#{postController.currentPost.title}" /> - Blog</title>
-	<h:outputStylesheet library="css" name="blog.css" />
-	<h:outputStylesheet library="css" name="bootstrap.min.css" />
-</h:head>
+<f:metadata>
+	<f:viewAction action="#{postController.checkWhetherPostExists}"
+		onPostback="true" />
+</f:metadata>
 
-<h:body>
-	<h:messages />
-	<h1>
-		<h:outputText value="#{postController.currentPost.title}" />
-	</h1>
-	<p>
-		<h:outputText value="#{postController.currentPost.content}" />
-	</p>
-	<hr />
-	<h2>Comments</h2>
-	<ui:repeat value="#{postController.currentPost.comments}" var="comment">
-		<p>#{comment.content}</p>
-	</ui:repeat>
-	<h:form>
-		<div class="form-group">
-			<label for="" class="sr-only">Your comment</label>
-			<h:inputText value="#{commentController.content}"
-				p:placeholder="Your comment" class="form-control" id="content" />
-		</div>
-		<h:commandButton value="Add comment"
-			action="#{commentController.save(postController.currentPost)}" class="btn btn-primary">
-			<f:param name="id" value="#{postController.currentPost.id}" />
-		</h:commandButton>
-	</h:form>
-	<hr />
-	<a href="index.xhtml" title="Back to list">Back to list</a>
-</h:body>
+<ui:composition template="/WEB-INF/includes/layout.xhtml">
+	<ui:define name="title">My wonderful webblog</ui:define>
+	<ui:define name="header">
+		<h1>#{postController.currentPost.title}</h1>
+	</ui:define>
+	<ui:define name="content">
+		<p>
+			<h:outputText value="#{postController.currentPost.content}" />
+		</p>
+		<hr />
+		<h2>Comments</h2>
+		<ul>
+			<ui:repeat value="#{postController.currentPost.comments}"
+				var="comment">
+				<li>
+					<small>
+						<h:outputText value="#{comment.createdAt}">
+								<f:converter converterId="localDateTimeConverter" />
+								<f:attribute name="pattern" value="yyyy-MM-dd hh:mm:ss" />
+								<f:attribute name="timeZone" value="Europe/Berlin" />
+							</h:outputText>
+					</small>
+					<br />
+					#{comment.content}
+				</li>
+			</ui:repeat>
+		</ul>
+		<h:form id="addComment">
+			<div class="form-group #{yourComment.valid ? '' : 'has-error'}">
+				<label for="yourComment" class="sr-only">Your comment</label>
+				<h:inputText value="#{commentController.content}"
+					binding="#{yourComment}" p:placeholder="Your comment"
+					class="form-control" id="yourComment" />
+				<h:messages class="help-block" id="messageYourComment"
+					for="yourComment" />
+			</div>
+			<h:commandButton value="Add comment"
+				action="#{commentController.save(postController.currentPost)}"
+				class="btn btn-primary" includeViewParams="true">
+				<f:param name="id" value="#{postController.postId}" />
+			</h:commandButton>
+		</h:form>
+		<hr />
+		<h:outputLink value="#{postController.postsPage}">
+			<h:outputText value="Back to posts" />
+		</h:outputLink>
+	</ui:define>
+</ui:composition>
 
 </html>

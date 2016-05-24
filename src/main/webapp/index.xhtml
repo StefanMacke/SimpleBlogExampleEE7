@@ -7,29 +7,29 @@
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets">
 
-<h:head>
-	<meta content="text/html; charset=UTF-8" />
-	<title>Blog</title>
-	<h:outputStylesheet library="css" name="blog.css" />
-	<h:outputStylesheet library="css" name="bootstrap.min.css" />
-</h:head>
-
-<h:body>
-	<h1>My wonderful weblog</h1>
-	<h:messages />
-	<ui:repeat value="#{postController.posts}" var="post">
-		<h2>
-			<h:outputText value="#{post.title}" />
-		</h2>
-		<p>
-			<h:outputText value="#{post.content}" />
-		</p>
-		<h:outputLink value="post.xhtml">
-			<f:param name="id" value="#{post.id}" />
-			<h:outputText value="Read more" />
-		</h:outputLink>
-		<hr />
-	</ui:repeat>
-</h:body>
+<ui:composition template="/WEB-INF/includes/layout.xhtml">
+	<ui:define name="title">My wonderful webblog</ui:define>
+	<ui:define name="header">
+		<h1>My wonderful weblog</h1>
+	</ui:define>
+	<ui:define name="content">
+		<ui:repeat value="#{postController.posts}" var="post">
+			<h2>
+				<h:outputText value="#{post.title}" />
+			</h2>
+			<p>
+				<h:outputText value="#{post.content}" />
+			</p>
+			<p>
+				<small>#{post.comments.size()} comment#{post.comments.size() == 1 ? '' : 's'}</small>
+			</p>
+			<h:outputLink value="#{postController.postPage}">
+				<f:param name="id" value="#{post.id}" />
+				<h:outputText value="Read more" />
+			</h:outputLink>
+			<hr />
+		</ui:repeat>
+	</ui:define>
+</ui:composition>
 
 </html>
