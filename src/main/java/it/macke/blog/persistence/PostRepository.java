@@ -9,7 +9,7 @@ import javax.persistence.PersistenceContext;
 import it.macke.blog.domain.Post;
 
 @RequestScoped
-public class PostService
+public class PostRepository
 {
 	@PersistenceContext
 	private EntityManager em;

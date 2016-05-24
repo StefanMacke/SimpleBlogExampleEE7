@@ -1,16 +1,14 @@
 package it.macke.blog.web;
 
-import java.util.Map;
 import java.util.Optional;
 
 import javax.enterprise.context.RequestScoped;
 import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import it.macke.blog.domain.Post;
-import it.macke.blog.persistence.PostService;
+import it.macke.blog.persistence.PostRepository;
 
 @Named
 @RequestScoped
@@ -20,16 +18,16 @@ public class PostController extends Controller
 	public static final String POST_PAGE = "post.xhtml";
 
 	@Inject
-	private PostService service;
+	private PostRepository repo;
 
 	private Optional<Post> currentPost;
 
 	public String getPostId()
 	{
-		final Map<String, String> requestParams =
-				FacesContext.getCurrentInstance().getExternalContext()
-						.getRequestParameterMap();
-		return requestParams.get("id");
+		final Optional<String> idOrNothing = getParameter("id");
+		return idOrNothing.isPresent()
+				? idOrNothing.get()
+				: "";
 	}
 
 	public String getPostsPage()
@@ -44,7 +42,7 @@ public class PostController extends Controller
 
 	public Iterable<Post> getPosts()
 	{
-		return service.findAll();
+		return repo.findAll();
 	}
 
 	public Optional<Long> parsePostId()
@@ -81,7 +79,7 @@ public class PostController extends Controller
 		final Optional<Long> postIdOrNothing = parsePostId();
 		if (postIdOrNothing.isPresent())
 		{
-			currentPost = service.find(postIdOrNothing.get());
+			currentPost = repo.find(postIdOrNothing.get());
 		}
 	}
 

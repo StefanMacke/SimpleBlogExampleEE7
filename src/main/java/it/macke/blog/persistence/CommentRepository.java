@@ -9,7 +9,7 @@ import it.macke.blog.domain.Comment;
 import it.macke.blog.domain.Post;
 
 @RequestScoped
-public class CommentService
+public class CommentRepository
 {
 	@PersistenceContext
 	private EntityManager em;

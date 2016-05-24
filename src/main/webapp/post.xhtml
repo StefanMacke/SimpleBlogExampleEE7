@@ -6,7 +6,8 @@
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:c="http://java.sun.com/jsp/jstl/core"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:p="http://java.sun.com/jsf/passthrough">
+	xmlns:p="http://xmlns.jcp.org/jsf/passthrough"
+	xmlns:macke="http://macke.it/facelets">
 
 <f:metadata>
 	<f:viewAction action="#{postController.checkWhetherPostExists}"
@@ -16,7 +17,10 @@
 <ui:composition template="/WEB-INF/includes/layout.xhtml">
 	<ui:define name="title">My wonderful webblog</ui:define>
 	<ui:define name="header">
-		<h1>#{postController.currentPost.title}</h1>
+		<header>
+			<h1>#{postController.currentPost.title}</h1>
+			<macke:date date="#{postController.currentPost.createdAt}" />
+		</header>
 	</ui:define>
 	<ui:define name="content">
 		<p>
@@ -28,13 +32,7 @@
 			<ui:repeat value="#{postController.currentPost.comments}"
 				var="comment">
 				<li>
-					<small>
-						<h:outputText value="#{comment.createdAt}">
-								<f:converter converterId="localDateTimeConverter" />
-								<f:attribute name="pattern" value="yyyy-MM-dd hh:mm:ss" />
-								<f:attribute name="timeZone" value="Europe/Berlin" />
-							</h:outputText>
-					</small>
+					<macke:date date="#{comment.createdAt}" />
 					<br />
 					#{comment.content}
 				</li>

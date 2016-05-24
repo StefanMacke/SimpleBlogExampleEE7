@@ -2,6 +2,7 @@ package it.macke.blog.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -11,7 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
 @Entity
-public class Post
+public class Post extends CreatableEntity
 {
 	@Id
 	@GeneratedValue
@@ -56,6 +57,22 @@ public class Post
 	public Iterable<Comment> getComments()
 	{
 		return comments;
+	}
+
+	public boolean hasComments()
+	{
+		return !comments.isEmpty();
+	}
+
+	public Optional<Comment> getLatestComment()
+	{
+		if (comments.isEmpty())
+		{
+			return Optional.empty();
+		}
+		return comments
+				.stream()
+				.max((c1, c2) -> c1.getCreatedAt().compareTo(c2.getCreatedAt()));
 	}
 
 	@Override

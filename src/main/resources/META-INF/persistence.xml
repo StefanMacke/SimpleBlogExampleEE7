@@ -6,6 +6,7 @@
 		<jta-data-source>java:jboss/datasources/ExampleDS</jta-data-source>
 		<class>it.macke.blog.domain.Post</class>
 		<class>it.macke.blog.domain.Comment</class>
+		<class>it.macke.blog.domain.CreatableEntity</class>
 		<properties>
 			<property name="hibernate.hbm2ddl.auto" value="create-drop" />
 		</properties>
